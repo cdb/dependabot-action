@@ -4,7 +4,7 @@ import * as core from '@actions/core'
 import {Context} from '@actions/github/lib/context'
 import {WorkflowDispatchEvent} from '@octokit/webhooks-types'
 
-const DYNAMIC = 'dynamic'
+const DYNAMIC = 'workflow_dispatch'
 const DEPENDABOT_ACTOR = 'cdb'
 
 // JobParameters are the Action inputs required to execute the job

@@ -85869,7 +85869,7 @@ exports.getJobParameters = exports.JobParameters = void 0;
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const core = __importStar(__nccwpck_require__(2186));
-const DYNAMIC = 'dynamic';
+const DYNAMIC = 'workflow_dispatch';
 const DEPENDABOT_ACTOR = 'cdb';
 // JobParameters are the Action inputs required to execute the job
 class JobParameters {
