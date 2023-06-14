@@ -14172,16 +14172,6 @@ CombinedStream.prototype._emitError = function(err) {
 
 /***/ }),
 
-/***/ 4137:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const binding = __nccwpck_require__(4240);
-
-module.exports = binding.getCPUInfo;
-
-
-/***/ }),
-
 /***/ 8222:
 /***/ ((module, exports, __nccwpck_require__) => {
 
@@ -69009,7 +68999,7 @@ const crypto = __nccwpck_require__(6113);
 
 let cpuInfo;
 try {
-  cpuInfo = __nccwpck_require__(4137)();
+  cpuInfo = __nccwpck_require__(7295)();
 } catch {}
 
 const { bindingAvailable } = __nccwpck_require__(5708);
@@ -86040,6 +86030,7 @@ function run(context) {
             botSay('starting update');
             // Retrieve JobParameters from the Actions environment
             const params = (0, inputs_1.getJobParameters)(context);
+            botSay('got params' + JSON.stringify(params));
             // The parameters will be null if the Action environment
             // is not a valid Dependabot-triggered dynamic event.
             if (params === null) {
@@ -86047,16 +86038,22 @@ function run(context) {
                 return; // TODO: This should be setNeutral in future
             }
             jobId = params.jobId;
+            botSay('got job id' + jobId);
             core.setSecret(params.jobToken);
+            botSay('set job token');
             core.setSecret(params.credentialsToken);
+            botSay('set credentials token');
             const client = axios_1.default.create({ baseURL: params.dependabotApiUrl });
+            botSay('created axios client' + JSON.stringify(client));
             (0, axios_retry_1.default)(client, {
                 retryDelay: axios_retry_1.default.exponentialDelay,
                 retryCondition: e => {
                     return axios_retry_1.default.isNetworkError(e) || axios_retry_1.default.isRetryableError(e);
                 }
             });
+            botSay('set retry policy');
             const apiClient = new api_client_1.ApiClient(client, params);
+            botSay('created api client' + JSON.stringify(apiClient));
             core.info('Fetching job details');
             // If we fail to succeed in fetching the job details, we cannot be sure the job has entered a 'processing' state,
             // so we do not try attempt to report back an exception if this fails and instead rely on the workflow run
@@ -86597,17 +86594,18 @@ exports.errStream = errStream;
 
 /***/ }),
 
-/***/ 4240:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-module.exports = require(__nccwpck_require__.ab + "build/Release/cpufeatures.node")
-
-/***/ }),
-
 /***/ 9041:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 module.exports = require(__nccwpck_require__.ab + "lib/protocol/crypto/build/Release/sshcrypto.node")
+
+/***/ }),
+
+/***/ 7295:
+/***/ ((module) => {
+
+module.exports = eval("require")("cpu-features");
+
 
 /***/ }),
 

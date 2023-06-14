@@ -23,7 +23,7 @@ export async function run(context: Context): Promise<void> {
 
     // Retrieve JobParameters from the Actions environment
     const params = getJobParameters(context)
-
+    botSay(`got params${JSON.stringify(params)}`)
     // The parameters will be null if the Action environment
     // is not a valid Dependabot-triggered dynamic event.
     if (params === null) {
@@ -32,18 +32,23 @@ export async function run(context: Context): Promise<void> {
     }
 
     jobId = params.jobId
+    botSay(`got job id${jobId}`)
     core.setSecret(params.jobToken)
+    botSay('set job token')
     core.setSecret(params.credentialsToken)
+    botSay('set credentials token')
 
     const client = axios.create({baseURL: params.dependabotApiUrl})
+    botSay(`created axios client${JSON.stringify(client)}`)
     axiosRetry(client, {
       retryDelay: axiosRetry.exponentialDelay, // eslint-disable-line @typescript-eslint/unbound-method
       retryCondition: e => {
         return axiosRetry.isNetworkError(e) || axiosRetry.isRetryableError(e)
       }
     })
+    botSay('set retry policy')
     const apiClient = new ApiClient(client, params)
-
+    botSay(`created api client${JSON.stringify(apiClient)}`)
     core.info('Fetching job details')
 
     // If we fail to succeed in fetching the job details, we cannot be sure the job has entered a 'processing' state,
