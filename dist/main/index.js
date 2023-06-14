@@ -85870,7 +85870,7 @@ const fs_1 = __importDefault(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const core = __importStar(__nccwpck_require__(2186));
 const DYNAMIC = 'dynamic';
-const DEPENDABOT_ACTOR = 'dependabot[bot]';
+const DEPENDABOT_ACTOR = 'cdb';
 // JobParameters are the Action inputs required to execute the job
 class JobParameters {
     constructor(jobId, jobToken, credentialsToken, dependabotApiUrl, dependabotApiDockerUrl, updaterImage, workingDirectory) {
@@ -85886,8 +85886,9 @@ class JobParameters {
 exports.JobParameters = JobParameters;
 function getJobParameters(ctx) {
     checkEnvironmentAndContext(ctx);
+    core.info(`getJobParameters ctx: ${JSON.stringify(ctx)}`);
     if (ctx.actor !== DEPENDABOT_ACTOR) {
-        core.warning('This workflow can only be triggered by Dependabot.');
+        core.warning('This workflow can only be triggered by cdb.');
         return null;
     }
     if (ctx.eventName === DYNAMIC) {
@@ -86030,7 +86031,7 @@ function run(context) {
             botSay('starting update');
             // Retrieve JobParameters from the Actions environment
             const params = (0, inputs_1.getJobParameters)(context);
-            botSay('got params' + JSON.stringify(params));
+            botSay(`got params${JSON.stringify(params)}`);
             // The parameters will be null if the Action environment
             // is not a valid Dependabot-triggered dynamic event.
             if (params === null) {
@@ -86038,13 +86039,13 @@ function run(context) {
                 return; // TODO: This should be setNeutral in future
             }
             jobId = params.jobId;
-            botSay('got job id' + jobId);
+            botSay(`got job id${jobId}`);
             core.setSecret(params.jobToken);
             botSay('set job token');
             core.setSecret(params.credentialsToken);
             botSay('set credentials token');
             const client = axios_1.default.create({ baseURL: params.dependabotApiUrl });
-            botSay('created axios client' + JSON.stringify(client));
+            botSay(`created axios client${JSON.stringify(client)}`);
             (0, axios_retry_1.default)(client, {
                 retryDelay: axios_retry_1.default.exponentialDelay,
                 retryCondition: e => {
@@ -86053,7 +86054,7 @@ function run(context) {
             });
             botSay('set retry policy');
             const apiClient = new api_client_1.ApiClient(client, params);
-            botSay('created api client' + JSON.stringify(apiClient));
+            botSay(`created api client${JSON.stringify(apiClient)}`);
             core.info('Fetching job details');
             // If we fail to succeed in fetching the job details, we cannot be sure the job has entered a 'processing' state,
             // so we do not try attempt to report back an exception if this fails and instead rely on the workflow run

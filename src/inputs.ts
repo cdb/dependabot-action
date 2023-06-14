@@ -5,7 +5,7 @@ import {Context} from '@actions/github/lib/context'
 import {WorkflowDispatchEvent} from '@octokit/webhooks-types'
 
 const DYNAMIC = 'dynamic'
-const DEPENDABOT_ACTOR = 'dependabot[bot]'
+const DEPENDABOT_ACTOR = 'cdb'
 
 // JobParameters are the Action inputs required to execute the job
 export class JobParameters {
@@ -22,9 +22,10 @@ export class JobParameters {
 
 export function getJobParameters(ctx: Context): JobParameters | null {
   checkEnvironmentAndContext(ctx)
+  core.info(`getJobParameters ctx: ${JSON.stringify(ctx)}`)
 
   if (ctx.actor !== DEPENDABOT_ACTOR) {
-    core.warning('This workflow can only be triggered by Dependabot.')
+    core.warning('This workflow can only be triggered by cdb.')
     return null
   }
 
