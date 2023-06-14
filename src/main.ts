@@ -130,7 +130,7 @@ export async function run(context: Context): Promise<void> {
       // We output the raw error in the Action logs and defer
       // to workflow_run monitoring to detect the job failure.
       setFailed('Dependabot encountered an unexpected problem', error)
-      botSay('finished: unexpected error')
+      botSay(`finished: unexpected error: ${JSON.stringify(error)}`)
     }
   }
 }
@@ -159,6 +159,8 @@ function botSay(message: string): void {
 function setFailed(message: string, error: Error | null): void {
   if (jobId) {
     message = [message, error, dependabotJobHelp()].filter(Boolean).join('\n\n')
+  } else {
+    message = [message, error].filter(Boolean).join('\n\n')
   }
 
   core.setFailed(message)
